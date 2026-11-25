@@ -592,7 +592,7 @@ export async function createTask(
   const task: StoredTask = {
     id: newId(),
     quest_id: questId,
-    plan_id: planId,
+    plan_id: plan ? planId : null,
     title: payload.title,
     description: payload.description ?? null,
     status: 'not_started',
@@ -607,12 +607,11 @@ export async function createTask(
     plan.tasks.push(task);
   } else {
     // Orphan task: no milestone yet, surfaced as an "unassigned" bucket on read.
-    const unassigned = quest.plans.find(p => p.title === 'Unassigned tasks' && p.ordering === 9999);
-    if (unassigned) {
-      unassigned.tasks.push(task);
-    } else {
-      quest.plans.push({
-        id: newId(),
+    const containerId = unassignedPlanId(questId);
+    let container = quest.plans.find(p => p.id === containerId);
+    if (!container) {
+      container = {
+        id: containerId,
         quest_id: questId,
         title: 'Unassigned tasks',
         description: 'Tasks that are not part of a mission yet.',
@@ -622,14 +621,16 @@ export async function createTask(
         xp_required: null,
         created_at: now,
         updated_at: now,
-        tasks: [task],
-      });
+        tasks: [],
+      };
+      quest.plans.push(container);
     }
+    container.tasks.push(task);
   }
 
   logEvent(db, task.id, task.title, 'created', null, task.title);
   persist(db);
-  return { ...task, overdue: isTaskOverdue(task.due_date, task.status) };
+  return toTask(task);
 }
 
 export async function updateTask(
@@ -642,7 +643,7 @@ export async function updateTask(
 
   const { task } = found;
   const changed = (Object.keys(payload) as (keyof typeof payload)[])
-    .filter(key => String((task as Record<string, unknown>)[key] ?? '') !== String(payload[key] ?? ''));
+    .filter(key => String((task as unknown as Record<string, unknown>)[key] ?? '') !== String(payload[key] ?? ''));
 
   Object.assign(task, payload, { updated_at: stamp() });
 
@@ -678,7 +679,7 @@ export async function deleteTask(taskId: string): Promise<boolean> {
   const found = findTask(db, taskId);
   if (!found) return false;
 
-  found.plan!.tasks = found.plan!.tasks.filter(task => task.id !== taskId);
+  found.plan.tasks = found.plan.tasks.filter(task => task.id !== taskId);
   db.events = db.events.filter(event => event.task_id !== taskId);
   persist(db);
   return true;

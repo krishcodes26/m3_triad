@@ -12,6 +12,8 @@
  */
 
 import { supabase } from '@/lib/supabase';
+import { isDemoMode } from '@/lib/demo';
+import * as demo from '@/lib/demo/quests';
 import type {
   Quest, Plan, Task, TaskEvent, TaskEventType,
   QuestStatus, PlanStatus, TaskStatus, Vector,
@@ -26,6 +28,8 @@ const now = () => new Date().toISOString();
    ════════════════════════════════════════════════════════════════════════ */
 
 export async function getQuests(userId: string): Promise<Quest[]> {
+  if (isDemoMode()) return demo.getQuests(userId);
+
   const { data, error } = await supabase
     .from('missions')
     .select('*')
@@ -52,6 +56,8 @@ export async function getQuests(userId: string): Promise<Quest[]> {
 }
 
 export async function getQuestWithPlans(questId: string, userId: string): Promise<Quest | null> {
+  if (isDemoMode()) return demo.getQuestWithPlans(questId, userId);
+
   const { data: mission, error } = await supabase
     .from('missions')
     .select('*')
@@ -81,6 +87,8 @@ export async function getQuestWithPlans(questId: string, userId: string): Promis
  * tasks plus the bonus for each fully finished milestone.
  */
 export async function getUserClaimedXp(userId: string): Promise<number> {
+  if (isDemoMode()) return demo.getUserClaimedXp(userId);
+
   const { data: missions, error: missionErr } = await supabase
     .from('missions')
     .select('id')
@@ -140,6 +148,8 @@ export async function createQuest(
   userId: string,
   payload: { title: string; description?: string; goal?: string; vector: Vector; deadline?: string }
 ): Promise<Quest | null> {
+  if (isDemoMode()) return demo.createQuest(userId, payload);
+
   const { data, error } = await supabase
     .from('missions')
     .insert({
@@ -174,6 +184,8 @@ export async function updateQuest(
     status: QuestStatus;
   }>
 ): Promise<boolean> {
+  if (isDemoMode()) return demo.updateQuest(questId, userId, payload);
+
   const { error } = await supabase
     .from('missions')
     .update({ ...payload, updated_at: now() })
@@ -185,6 +197,8 @@ export async function updateQuest(
 }
 
 export async function updateQuestStatus(questId: string, userId: string, status: QuestStatus): Promise<boolean> {
+  if (isDemoMode()) return demo.updateQuestStatus(questId, userId, status);
+
   const { error } = await supabase
     .from('missions')
     .update({ status, updated_at: now() })
@@ -196,6 +210,8 @@ export async function updateQuestStatus(questId: string, userId: string, status:
 }
 
 export async function deleteQuest(questId: string, userId: string): Promise<boolean> {
+  if (isDemoMode()) return demo.deleteQuest(questId, userId);
+
   const { error } = await supabase
     .from('missions')
     .delete()
@@ -211,6 +227,8 @@ export async function deleteQuest(questId: string, userId: string): Promise<bool
    ════════════════════════════════════════════════════════════════════════ */
 
 export async function getPlans(questId: string): Promise<Plan[]> {
+  if (isDemoMode()) return demo.getPlans(questId);
+
   const byMission = await fetchPlansForMissions([questId]);
   return byMission.get(questId) ?? [];
 }
