@@ -316,6 +316,8 @@ export async function createPlan(
   questId: string,
   payload: { title: string; description?: string; due_date?: string; ordering?: number; xp_required?: number | null }
 ): Promise<Plan | null> {
+  if (isDemoMode()) return demo.createPlan(questId, payload);
+
   const row: Record<string, unknown> = {
     mission_id: questId,
     title: payload.title,
@@ -351,6 +353,8 @@ export async function updatePlan(
   planId: string,
   payload: Partial<{ title: string; description: string | null; due_date: string | null; completed: boolean; xp_required: number | null }>
 ): Promise<boolean> {
+  if (isDemoMode()) return demo.updatePlan(planId, payload);
+
   const patch: Record<string, unknown> = { ...payload, updated_at: now() };
 
   let { error } = await supabase
@@ -376,6 +380,8 @@ function isMissingXpColumn(error: { code?: string; message?: string } | null): b
 }
 
 export async function deletePlan(planId: string): Promise<boolean> {
+  if (isDemoMode()) return demo.deletePlan(planId);
+
   // milestone_id is ON DELETE SET NULL, which would orphan tasks. Delete the
   // tasks explicitly so "delete mission" behaves the way the UI promises.
   const { error: taskErr } = await supabase
@@ -402,6 +408,8 @@ export async function createTask(
   planId: string | null,
   payload: { title: string; description?: string; due_date?: string; priority?: number }
 ): Promise<Task | null> {
+  if (isDemoMode()) return demo.createTask(questId, planId, payload);
+
   const { data, error } = await supabase
     .from('tasks')
     .insert({
@@ -434,6 +442,8 @@ export async function updateTask(
     priority: number;
   }>
 ): Promise<boolean> {
+  if (isDemoMode()) return demo.updateTask(taskId, payload);
+
   const { data: current, error: readErr } = await supabase
     .from('tasks')
     .select('*')
@@ -481,6 +491,8 @@ export async function setTaskStatus(
   status: TaskStatus,
   previousStatus?: TaskStatus
 ): Promise<boolean> {
+  if (isDemoMode()) return demo.setTaskStatus(taskId, status, previousStatus);
+
   let prev = previousStatus;
   if (!prev) {
     const { data } = await supabase.from('tasks').select('status').eq('id', taskId).single();
@@ -529,6 +541,8 @@ export async function updateTaskStatus(taskId: string, status: TaskStatus): Prom
 }
 
 export async function deleteTask(taskId: string): Promise<boolean> {
+  if (isDemoMode()) return demo.deleteTask(taskId);
+
   const { error } = await supabase.from('tasks').delete().eq('id', taskId);
   if (error) console.error('deleteTask:', error);
   return !error;
@@ -539,6 +553,8 @@ export async function deleteTask(taskId: string): Promise<boolean> {
    ════════════════════════════════════════════════════════════════════════ */
 
 export async function getQuestActivity(questId: string): Promise<TaskEvent[]> {
+  if (isDemoMode()) return demo.getQuestActivity(questId);
+
   const { data: tasks, error: taskErr } = await supabase
     .from('tasks')
     .select('id, title')
