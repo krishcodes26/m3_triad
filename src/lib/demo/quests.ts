@@ -140,18 +140,59 @@ function stamp(offsetDays = 0, offsetMinutes = 0): string {
   return d.toISOString();
 }
 
+/** Container plan that holds tasks without a milestone (mirrors milestone_id = null). */
+function unassignedPlanId(questId: string): string {
+  return `unassigned:${questId}`;
+}
+
+function isContainerPlan(plan: StoredPlan): boolean {
+  return plan.id.startsWith('unassigned:');
+}
+
+function toTask(task: StoredTask): Task {
+  return { ...task, overdue: isTaskOverdue(task.due_date, task.status) };
+}
+
 function toPlans(quest: StoredQuest): Plan[] {
-  return quest.plans.map(plan => {
-    const tasks: Task[] = plan.tasks.map(task => ({
-      ...task,
-      overdue: isTaskOverdue(task.due_date, task.status),
-    }));
+  const plans: Plan[] = [];
+  const orphans: Task[] = [];
+
+  for (const plan of quest.plans) {
+    const tasks = plan.tasks.map(toTask);
+
+    if (isContainerPlan(plan)) {
+      orphans.push(...tasks);
+      continue;
+    }
+
     const progress = computeProgress(tasks);
     const status: PlanStatus = tasks.length > 0
       ? (progress === 100 ? 'completed' : progress > 0 ? 'in_progress' : 'not_started')
       : plan.status;
-    return { ...plan, tasks, progress, status };
-  });
+
+    plans.push({ ...plan, tasks, progress, status });
+  }
+
+  if (orphans.length > 0) {
+    const progress = computeProgress(orphans);
+    plans.push({
+      id: unassignedPlanId(quest.id),
+      quest_id: quest.id,
+      title: 'Unassigned tasks',
+      description: 'Tasks that are not part of a mission yet.',
+      ordering: 9999,
+      due_date: null,
+      status: progress === 100 ? 'completed' : 'in_progress',
+      xp_required: null,
+      created_at: orphans[0].created_at,
+      updated_at: orphans[0].updated_at,
+      tasks: orphans,
+      progress,
+      is_unassigned: true,
+    });
+  }
+
+  return plans;
 }
 
 function claimedXpOf(db: DemoDb): number {
@@ -178,7 +219,7 @@ function findQuest(db: DemoDb, questId: string): StoredQuest | undefined {
   return db.quests.find(quest => quest.id === questId);
 }
 
-function findTask(db: DemoDb, taskId: string): { quest: StoredQuest; plan?: StoredPlan; task: StoredTask } | null {
+function findTask(db: DemoDb, taskId: string): { quest: StoredQuest; plan: StoredPlan; task: StoredTask } | null {
   for (const quest of db.quests) {
     for (const plan of quest.plans) {
       const task = plan.tasks.find(t => t.id === taskId);
