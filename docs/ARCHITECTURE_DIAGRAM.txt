@@ -1,0 +1,395 @@
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                     M3 TRIAD - LIFE RPG SYSTEM ARCHITECTURE                     ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+
+                              ┌─────────────────────────────┐
+                              │   CHARACTER PROGRESSION     │
+                              │  (Lifetime XP & Overall)    │
+                              │  Level: 24, XP: 2,450/3,000 │
+                              └────────────┬────────────────┘
+                                           │
+                    ┌──────────────────────┼──────────────────────┐
+                    │                      │                      │
+                    ▼                      ▼                      ▼
+        ╔═══════════════════╗  ╔═══════════════════╗  ╔═══════════════════╗
+        │   MIND VECTOR     │  │  MUSCLE VECTOR    │  │  MONEY VECTOR     │
+        │  (Intellect)      │  │  (Vitality)       │  │  (Sovereignty)    │
+        ├───────────────────┤  ├───────────────────┤  ├───────────────────┤
+        │ Level: 26         │  │ Level: 23         │  │ Level: 21         │
+        │ XP: 26,000+       │  │ XP: 23,000+       │  │ XP: 21,000+       │
+        │ Tier: 840/1,000   │  │ Tier: 620/1,000   │  │ Tier: 490/1,000   │
+        └───────────────────┘  └───────────────────┘  └───────────────────┘
+                 ▲                      ▲                      ▲
+                 │                      │                      │
+        ┌────────┴───────┐    ┌────────┴───────┐    ┌────────┴───────┐
+        │                │    │                │    │                │
+   DOMAIN SOURCES   DOMAIN SOURCES   DOMAIN SOURCES
+   • Reading        • Workouts      • Business Actions
+   • Focus Blocks   • Nutrition     • Client Delivery
+   • Study Sessions • Sleep         • Revenue Milestones
+   • Deep Work      • Hydration     • Invoicing
+
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                           PROGRESSION EVENTS FLOW                              ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+User performs action
+        │
+        ▼
+┌───────────────────────────────────────────────────────────────┐
+│ PROGRESSION EVENT (created with stable event_key)            │
+│ • Prevents duplicates via unique constraint                   │
+│ • Records occurred_at, local_date, timezone                   │
+│ • Stores verification_level                                   │
+└───────────────────────────────────────────────────────────────┘
+        │
+        ▼
+┌───────────────────────────────────────────────────────────────┐
+│ BACKEND VALIDATION (9-point eligibility pipeline)            │
+│ ✓ User owns source record                                     │
+│ ✓ Source record is valid & complete                           │
+│ ✓ Meets configured reward condition                           │
+│ ✓ Not a duplicate event                                       │
+│ ✓ Hasn't already received same reward                         │
+│ ✓ Reward cap/cooldown permits award                           │
+│ ✓ Vector is defined                                           │
+│ ✓ Within permitted date/time window                           │
+│ ✓ Verification requirement satisfied                          │
+└───────────────────────────────────────────────────────────────┘
+        │ (All pass)
+        ▼
+┌───────────────────────────────────────────────────────────────┐
+│ XP LEDGER ENTRY (append-only, never modified)                │
+│ • vector: mind | muscle | money                              │
+│ • xp_delta: +20, +50, +100, etc.                             │
+│ • reward_key: unique rule identifier                          │
+│ • rule_version: for auditability                              │
+│ • correction_of_id: null (unless reversal)                    │
+└───────────────────────────────────────────────────────────────┘
+        │
+        ▼
+┌───────────────────────────────────────────────────────────────┐
+│ UPDATE VECTOR PROGRESS (cached)                              │
+│ • Recalculate vector_lifetime_xp = sum of ledger entries     │
+│ • Recalculate vector_level from thresholds                    │
+│ • Recalculate tier_xp and tier_xp_required                    │
+└───────────────────────────────────────────────────────────────┘
+        │
+        ▼
+┌───────────────────────────────────────────────────────────────┐
+│ UPDATE CHARACTER PROGRESS (cached)                            │
+│ • Recalculate lifetime_xp = sum of all vector XP             │
+│ • Recalculate character_level from thresholds                 │
+│ • Recalculate harmony_score from vector levels                │
+└───────────────────────────────────────────────────────────────┘
+        │
+        ▼
+  Did vector level up?
+   Yes ──→ Create vector-level-up event
+   No  ──→ Continue
+        │
+        ▼
+  Did character level up?
+   Yes ──→ Create character-level-up event
+   No  ──→ Continue
+        │
+        ▼
+┌───────────────────────────────────────────────────────────────┐
+│ CHECK RANK ELIGIBILITY                                       │
+│ ✓ Character level >= min                                      │
+│ ✓ Lifetime XP >= min                                          │
+│ ✓ Each vector level >= min (stability requirement)            │
+│ ✓ Harmony score >= min                                        │
+│ ✓ Required badges unlocked                                    │
+└───────────────────────────────────────────────────────────────┘
+   Eligible → Mark rank_up → Send notification
+        │
+        ▼
+┌───────────────────────────────────────────────────────────────┐
+│ EVALUATE BADGES                                              │
+│ For each relevant badge definition:                           │
+│ • Check if criteria met for first time                        │
+│ • If yes: unlock badge, award badge XP                        │
+│ • Unlock related title or perk if configured                  │
+└───────────────────────────────────────────────────────────────┘
+        │
+        ▼
+┌───────────────────────────────────────────────────────────────┐
+│ CREATE NOTIFICATIONS                                          │
+│ • XP awarded → show amount, vector, reason                    │
+│ • Level-up → show celebration                                 │
+│ • Rank-up → show rewards unlocked                             │
+│ • Badge unlock → show achievement                             │
+└───────────────────────────────────────────────────────────────┘
+        │
+        ▼
+┌───────────────────────────────────────────────────────────────┐
+│ REFRESH CACHED VIEWS                                         │
+│ • Dashboard (daily quests, XP today, recent activities)       │
+│ • Character Profile (vectors, rank, harmony, badges)          │
+│ • Calendar (daily summary, XP earned)                         │
+│ • Analytics (period aggregates)                               │
+└───────────────────────────────────────────────────────────────┘
+
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                           RANK LADDER PROGRESSION                              ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+E: NOVICE          ← Starting rank (Level 1+)
+        │
+        └─→ Requires: Lvl ?, XP ?, Min Vector Levels, Harmony > ?, Badges?
+                │
+D: APPRENTICE      ← Progression tier
+        │
+        └─→ Requires: Lvl ?, XP ?, Min Vector Levels, Harmony > ?, Badges?
+                │
+C: WARRIOR         ← Lvl 20–29 (design-confirmed)
+        │
+        ├─→ Requires: Lvl 20, XP ~10,000, Min Vector Levels, Harmony > 50%
+        │
+        └─→ Unlocks: 2 Equipment Slots, Warrior Title, Guild Authority
+                │
+B: ELITE           ← Lvl 30–44 (design-confirmed)
+        │
+        ├─→ Requires: Lvl 30, XP 65,000, Each Vector > Lvl 25, Harmony > 60%
+        │
+        └─→ Unlocks: 4 Equipment Slots, Elite Title, Authority
+                │
+A: MASTER          ← Lvl 45–59 (TBD)
+        │
+        └─→ Requires: TBD
+                │
+S: GRANDMASTER     ← Lvl 60–74 (TBD)
+        │
+        └─→ Requires: TBD
+                │
+SS: LEGEND         ← Lvl 75–89 (TBD)
+        │
+        └─→ Requires: TBD
+                │
+SSS: MYTHIC        ← Lvl 90+ (TBD)
+        │
+        └─→ Requires: TBD
+
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                         TRI-VECTOR HARMONY BALANCE                             ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+                              Normalize each vector
+                              to 0–100 scale ⚠️ TBD
+                                        │
+                    ┌───────────────────┼───────────────────┐
+                    │                   │                   │
+            ┌───────▼─────────┐  ┌──────▼──────┐  ┌────────▼────────┐
+            │  Mind Score      │  │ Muscle Score │  │ Money Score     │
+            │  (normalized)    │  │ (normalized) │  │ (normalized)    │
+            └───────┬─────────┘  └──────┬──────┘  └────────┬────────┘
+                    │                   │                   │
+                    └───────────────────┼───────────────────┘
+                                        │
+                    ┌───────────────────┴───────────────────┐
+                    │                                       │
+        min_score = lowest of three          avg_score = average of three
+                    │                                       │
+                    └───────────────────┬───────────────────┘
+                                        │
+                    harmony = (min_score × 0.4) + (avg_score × 0.6)
+                                        │
+                                        ▼
+                              ╔════════════════════╗
+                              │ Harmony Score      │
+                              │ 0% (imbalanced)    │
+                              │ to                 │
+                              │ 100% (perfect)     │
+                              ╚════════════════════╝
+                                        │
+                    ┌───────────────────┴───────────────────┐
+                    │                                       │
+        Used for: Rank gating        Used for: Display on
+                  Progression         Profile & Analytics
+                  throttling          
+                                        │
+            ⚠️ NEVER deletes XP ◄─────┴────► Only gates progression
+
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                           ANTI-FARMING SAFEGUARDS                              ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+Threat: Duplicate button tap
+  → Solution: Unique event_key + unique(event_id, reward_key) in ledger
+  → Result: First tap awards XP, retries return original result
+
+Threat: Spam small workouts
+  → Solution: cap_scope: "per_session", cap_count: 1
+  → Result: One completion reward per workout session, no farming
+
+Threat: Edit completed record to get more XP
+  → Solution: Idempotency check on event_key
+  → Result: Edits don't re-trigger rewards
+
+Threat: Log protein 10 times in one day for +400 XP
+  → Solution: cap_scope: "per_24h", unique(user_id, local_date)
+  → Result: Only one +40 Muscle XP per 24-hour cycle
+
+Threat: Submit fake PR achievement
+  → Solution: PR requires like-for-like comparison with prior records
+  → Result: Fake PRS detected and no bonus awarded
+
+Threat: Client claims 1000 XP for self
+  → Solution: Server calculates all XP from rules, never trusts client
+  → Result: Client can only request; backend decides
+
+Threat: Delete ledger entry to hide bad correction
+  → Solution: Append-only ledger with foreign key constraints
+  → Result: No deletion allowed; audit trail preserved
+
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                         KEY SYSTEM PRINCIPLES                                  ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+✓ SERVER IS AUTHORITATIVE
+  • XP calculated server-side only
+  • Levels derived from ledger
+  • Ranks determined by backend
+  • Client is display layer only
+
+✓ LEDGER IS IMMUTABLE
+  • No deletions
+  • No edits
+  • All corrections create new audit entries
+  • Full history preserved
+
+✓ EVENTS ARE IDEMPOTENT
+  • Same event_key = same result always
+  • Duplicate requests return original result
+  • No double-awards for retries
+
+✓ NON-PUNITIVE PROGRESSION
+  • Missed days never subtract XP
+  • Broken streaks never erase levels
+  • Badges never removed
+  • Users climb, never fall back
+
+✓ VECTOR STABILITY REQUIRED
+  • Rank promotions need minimum in EACH vector
+  • Prevents one vector dominating
+  • Harmony score monitors and gates progression
+
+✓ DOMAIN OWNERSHIP
+  • Habits own protocol definitions
+  • Workouts own exercise records
+  • Nutrition owns food logs
+  • Each domain validates its own source records
+  • XP ledger is centralized and shared
+
+✓ CONFIGURATION OVER CODE
+  • XP reward rules in JSON
+  • Level thresholds in JSON
+  • Rank requirements in JSON
+  • Badge definitions in JSON
+  • Easy to adjust without redeploying
+
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                           DATA INTEGRITY CHECKS                                ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+Rebuilding system from authoritative sources:
+
+1. XP Ledger (append-only, never modified)
+           │
+           ▼
+   Sum all xp_delta per vector
+   = vector_lifetime_xp (ground truth)
+           │
+           ▼
+   Sum all vectors
+   = character lifetime_xp (ground truth)
+           │
+           ▼
+   Cache in vector_progress and character_progress
+   (can be rebuilt anytime)
+           │
+           ▼
+   Recalculate levels from XP thresholds
+           │
+           ▼
+   Recalculate harmony from normalized scores
+           │
+           ▼
+   Recalculate rank eligibility
+   (can be rebuilt anytime)
+
+✓ NO DATA LOSS if cache corrupted
+✓ ALWAYS RECOVERABLE from ledger
+✓ AUDIT TRAIL preserved forever
+
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                         DOMAIN INTEGRATION POINTS                              ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+                            XP LEDGER (Centralized)
+                                  │
+                ┌─────────────────┼─────────────────┐
+                │                 │                 │
+        ┌───────▼────────┐ ┌──────▼─────┐ ┌───────▼────────┐
+        │  MIND DOMAIN   │ │   MUSCLE   │ │  MONEY DOMAIN  │
+        │                │ │   DOMAIN   │ │                │
+        ├────────────────┤ ├────────────┤ ├────────────────┤
+        │ • Habits       │ │ • Habits   │ │ • Habits       │
+        │ • Focus        │ │ • Workouts │ │ • Quests       │
+        │ • Reading      │ │ • Nutrition│ │ • Missions     │
+        │ • Quests       │ │ • Sleep    │ │ • Money Actions│
+        │ • Missions     │ │ • Hydration│ │                │
+        └────────────────┘ └────────────┘ └────────────────┘
+                │                 │                 │
+        Emits: Protocol      Emits: Workout    Emits: Business
+               Completion           Completion        Action
+               Focus Block          PR Achieved       Milestone
+               Reading Done         Protein Target    Verified
+               Task Done            Completed         Revenue Goal
+
+                            ↓↓↓ ALL FEED XP LEDGER ↓↓↓
+
+        ┌──────────────────────────────────────────────────────┐
+        │  Read-Only Views (derived from ledger + sources)     │
+        ├──────────────────────────────────────────────────────┤
+        │ • DASHBOARD (today's progress, quests, notifications)│
+        │ • PROFILE (vectors, rank, harmony, badges, titles)   │
+        │ • CALENDAR (daily summaries, activity heatmap)       │
+        │ • ANALYTICS (period aggregates, trends, telemetry)   │
+        │ • NOTIFICATIONS (durable, delivery channels)         │
+        └──────────────────────────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+                       ⚠️ CRITICAL PRODUCT DECISIONS PENDING
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+1. Vector level curve: 1,000 XP per level or scaling?
+2. Character level thresholds: Exact cumulative XP per level?
+3. Harmony normalization: How to convert levels to 0–100 scale?
+4. Harmony gating: Minimum harmony per rank promotion?
+5. Rank requirements: Complete definition for ranks A, S, SS, SSS?
+6. Reward table: Final XP values for all action types?
+7. Workout XP formula: How session + PR + volume combine?
+8. Nutrition cycle: Local midnight or rolling 24 hours?
+9. Streak behavior: Pause, break, or grace period on miss?
+10. Boss HP formula: Damage calculation and missed-day handling?
+11. Mission verification: Which tasks need manual vs auto?
+12. Cross-vector badge: Exact minimum daily activity definition?
+13. Perk effects: Actual gameplay effects (not just names)?
+14. Guild/Social: Leaderboard visibility in v1?
+
+                        → Schedule product sync immediately ←
+
+═══════════════════════════════════════════════════════════════════════════════════

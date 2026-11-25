@@ -1,0 +1,33 @@
+{
+  "character_levels": [
+    { "level": 1, "total_xp_required": 0 },
+    { "level": 2, "total_xp_required": 1000 },
+    { "level": 3, "total_xp_required": 2500 },
+    { "level": 4, "total_xp_required": 4500 },
+    { "level": 5, "total_xp_required": 7000 },
+    { "level": 10, "total_xp_required": 25000 },
+    { "level": 15, "total_xp_required": 55000 },
+    { "level": 20, "total_xp_required": 100000 },
+    { "level": 24, "total_xp_required": 165000 },
+    { "level": 30, "total_xp_required": 290000 },
+    { "level": 45, "total_xp_required": 900000 },
+    { "level": 60, "total_xp_required": 2000000 },
+    { "level": 75, "total_xp_required": 4000000 },
+    { "level": 90, "total_xp_required": 7000000 }
+  ],
+  "vector_levels": [
+    { "level": 1, "total_xp_required": 0 },
+    { "level": 2, "total_xp_required": 1000 },
+    { "level": 5, "total_xp_required": 5000 },
+    { "level": 10, "total_xp_required": 10000 },
+    { "level": 15, "total_xp_required": 15000 },
+    { "level": 20, "total_xp_required": 20000 },
+    { "level": 25, "total_xp_required": 25000 },
+    { "level": 26, "total_xp_required": 26000 },
+    { "level": 30, "total_xp_required": 30000 },
+    { "level": 50, "total_xp_required": 50000 },
+    { "level": 99, "total_xp_required": 99000 }
+  ],
+  "config_version": "1.0",
+  "note": "PENDING PRODUCT CONFIRMATION - These are sample values based on design examples. Exact thresholds must be confirmed before production."
+}

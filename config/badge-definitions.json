@@ -1,0 +1,128 @@
+{
+  "badges": [
+    {
+      "code": "deep_work_monk",
+      "name": "Deep Work Monk",
+      "description": "Log 100 unbroken hours of deep distraction-free work blocks",
+      "vector": "mind",
+      "tier": "Tier II",
+      "criteria_type": "cumulative_hours",
+      "criteria_config": {
+        "metric": "focus_session_hours",
+        "target": 100,
+        "unit": "hours"
+      },
+      "reward_xp": 100,
+      "reward_vector": "mind",
+      "title_unlock_id": null,
+      "perk_unlock_id": null,
+      "is_hidden": false,
+      "is_active": true,
+      "config_version": "1.0"
+    },
+    {
+      "code": "century_press",
+      "name": "Century Press",
+      "description": "Validated 100 kg+ flat barbell bench press with strict form",
+      "vector": "muscle",
+      "tier": "Tier II",
+      "criteria_type": "pr_achievement",
+      "criteria_config": {
+        "exercise": "flat_barbell_bench_press",
+        "metric": "max_weight",
+        "threshold": 100,
+        "unit": "kg"
+      },
+      "reward_xp": 150,
+      "reward_vector": "muscle",
+      "title_unlock_id": null,
+      "perk_unlock_id": null,
+      "is_hidden": false,
+      "is_active": true,
+      "config_version": "1.0"
+    },
+    {
+      "code": "first_rev_sprint",
+      "name": "First Rev Sprint",
+      "description": "Invoice and complete a client delivery milestone exceeding $3,000 USD",
+      "vector": "money",
+      "tier": "Tier I",
+      "criteria_type": "revenue_milestone",
+      "criteria_config": {
+        "action_type": "client_milestone",
+        "threshold": 3000,
+        "currency": "USD"
+      },
+      "reward_xp": 200,
+      "reward_vector": "money",
+      "title_unlock_id": null,
+      "perk_unlock_id": null,
+      "is_hidden": false,
+      "is_active": true,
+      "config_version": "1.0"
+    },
+    {
+      "code": "consistent_striker",
+      "name": "Consistent Striker",
+      "description": "Maintain unbroken daily routine habits across all 3 pillars for 14 straight days",
+      "vector": null,
+      "tier": "Equilibrium",
+      "criteria_type": "cross_vector",
+      "criteria_config": {
+        "consecutive_days": 14,
+        "require_mind": true,
+        "require_muscle": true,
+        "require_money": true,
+        "daily_minimum_activities": 1
+      },
+      "reward_xp": 100,
+      "reward_vector": "mind",
+      "title_unlock_id": null,
+      "perk_unlock_id": null,
+      "is_hidden": false,
+      "is_active": true,
+      "config_version": "1.0"
+    },
+    {
+      "code": "iron_pillar",
+      "name": "Iron Pillar",
+      "description": "Log 100 total high-intensity strength training sessions",
+      "vector": "muscle",
+      "tier": null,
+      "criteria_type": "cumulative_count",
+      "criteria_config": {
+        "metric": "strength_training_sessions",
+        "target": 100,
+        "unit": "sessions"
+      },
+      "reward_xp": 250,
+      "reward_vector": "muscle",
+      "title_unlock_id": null,
+      "perk_unlock_id": null,
+      "is_hidden": false,
+      "is_active": true,
+      "config_version": "1.0"
+    },
+    {
+      "code": "grand_architect",
+      "name": "Grand Architect",
+      "description": "Successfully ship 3 major production software architectures",
+      "vector": "mind",
+      "tier": null,
+      "criteria_type": "cumulative_count",
+      "criteria_config": {
+        "metric": "major_architecture_shipped",
+        "target": 3,
+        "unit": "architectures"
+      },
+      "reward_xp": 500,
+      "reward_vector": "mind",
+      "title_unlock_id": null,
+      "perk_unlock_id": null,
+      "is_hidden": false,
+      "is_active": true,
+      "config_version": "1.0"
+    }
+  ],
+  "note": "This is a sample badge catalog. Product must review and expand with complete badge definitions before production."
+}

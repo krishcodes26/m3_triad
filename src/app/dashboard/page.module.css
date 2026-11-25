@@ -1,0 +1,737 @@
+/* ============================================================================
+   Dashboard page — pixel-perfect from Dashboard.svg (1280×2097)
+   Content starts at x=296, effective width=944px
+   Main cards: rx=8, stroke 2px #1C1B1B, shadow dx=2 dy=2
+   ============================================================================ */
+
+/* ── Page wrapper ─────────────────────────────────────────────────────────── */
+
+.page {
+  padding: var(--sp-6) var(--content-pad);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+}
+
+.placeholder {
+  color: var(--muted-ink);
+  font-size: var(--text-14);
+  padding: var(--sp-6);
+}
+
+.placeholder a {
+  color: var(--purple);
+  text-decoration: underline;
+}
+
+/* ── Page header ──────────────────────────────────────────────────────────── */
+/* From SVG: first card y=96–274, header row y=96–178 (h=178)
+   Contains: eyebrow tag, greeting text, quick-action buttons           */
+
+.pageHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  padding-bottom: var(--sp-6);
+  border-bottom: 2px solid var(--ink);
+}
+
+/* Eyebrow tag: rx=1.5, fill=#EBE7E7, border 1px ink — from SVG line 8-9 */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  background-color: var(--gray-200);   /* #EBE7E7 */
+  border: 1px solid var(--ink);
+  border-radius: 2px;
+  font-size: var(--text-11);
+  font-weight: var(--fw-extrabold);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+  color: var(--muted-ink);
+  margin-bottom: var(--sp-3);
+}
+
+/* Greeting — large bold from SVG, ~36px measured */
+.greeting {
+  font-size: var(--text-greeting);     /* 36px */
+  font-weight: var(--fw-black);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-heading);
+  color: var(--ink);
+}
+
+.dateLine {
+  font-size: var(--text-13);
+  font-weight: var(--fw-medium);
+  color: var(--muted-ink);
+  margin-top: var(--sp-1);
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-shrink: 0;
+}
+
+/* ── Generic card — rx=8, stroke 2px ink, shadow 2×2 ─────────────────────── */
+/* From SVG: rect rx="8", stroke="#1C1B1B" stroke-width="2",
+   feOffset dx=2 dy=2 color=#1C1B1B                                         */
+
+.card {
+  background-color: var(--surface);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-card);    /* 8px */
+  box-shadow: var(--shadow-hard);       /* 2px 2px 0 #1C1B1B */
+  padding: var(--sp-6);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  margin-bottom: var(--sp-5);
+}
+
+.cardTitle {
+  font-size: var(--text-16);
+  font-weight: var(--fw-extrabold);
+  color: var(--ink);
+  line-height: var(--lh-snug);
+}
+
+.cardSubtitle {
+  font-size: var(--text-13);
+  font-weight: var(--fw-medium);
+  color: var(--muted-ink);
+  margin-top: 2px;
+}
+
+.cardMeta {
+  font-size: var(--text-11);
+  font-weight: var(--fw-extrabold);
+  color: var(--muted-ink);
+  text-transform: uppercase;
+  letter-spacing: var(--ls-label);
+}
+
+/* ── Section label above card group ─────────────────────────────────────── */
+
+.sectionLabel {
+  font-size: var(--text-11);
+  font-weight: var(--fw-extrabold);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+  color: var(--muted-ink);
+}
+
+/* ── Tri-vector grid: 3 cards, equal columns ─────────────────────────────── */
+/* From SVG: 3 cards at x=322/624/927, each w=286.667, gap≈16px             */
+
+.triGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-4);
+}
+
+/* Each tri-card: rx=4 (smaller card), stroke 2px, shadow 2×2
+   Left accent bar: 8px wide × full height from SVG (rect x=324/626/929 w=8) */
+
+.triCard {
+  background-color: var(--surface);
+  border: 2px solid var(--ink);
+  border-radius: 4px;                   /* rx=4 from SVG smaller cards */
+  box-shadow: var(--shadow-hard);
+  padding: var(--sp-5) var(--sp-5) var(--sp-5) calc(var(--sp-5) + 8px + var(--sp-3));
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-height: 122px;                    /* exact card height from SVG */
+}
+
+/* 8px accent bar on left — exact from SVG rect w=8 h=118 at x=324/626/929 */
+.triCard::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 8px;
+}
+.triCardMind::before   { background-color: var(--purple); }   /* #4F46E5 */
+.triCardMoney::before  { background-color: var(--red); }      /* #B61722 */
+.triCardMuscle::before { background-color: var(--green); }    /* #005338 */
+
+.triCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Level badge inside card: same as sidebar badge styling */
+.triCardLevel {
+  font-size: var(--text-11);
+  font-weight: var(--fw-extrabold);
+  color: var(--muted-ink);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+/* Large stat number — ~28px from SVG */
+.triCardStat {
+  font-size: 28px;
+  font-weight: var(--fw-black);
+  color: var(--ink);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.triCardUnit {
+  font-size: var(--text-14);
+  font-weight: var(--fw-semibold);
+  color: var(--muted-ink);
+}
+
+.triCardMeta {
+  font-size: var(--text-12);
+  color: var(--muted-ink);
+  font-weight: var(--fw-medium);
+}
+
+/* ── Progress row (inside tri-cards) ────────────────────────────────────── */
+/* From SVG: track rx=4.5 h=9, fill=#F0EDEC, border 1px ink
+   Fill: rx same, h=8 inner — lines 104–106                                */
+
+.progressRow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.progressTrack {
+  flex: 1;
+  height: 9px;                          /* exact h=9 from SVG */
+  background-color: var(--gray-100);    /* #F0EDEC */
+  border: 1px solid var(--ink);
+  border-radius: 999px;                 /* rx=4.5 → pill */
+  overflow: hidden;
+}
+
+.progressFillMind   { height: 8px; background-color: var(--purple); border-radius: 999px; }
+.progressFillMoney  { height: 8px; background-color: var(--red);    border-radius: 999px; }
+.progressFillMuscle { height: 8px; background-color: var(--green);  border-radius: 999px; }
+
+.progressPct {
+  font-size: var(--text-11);
+  font-weight: var(--fw-extrabold);
+  color: var(--muted-ink);
+  font-variant-numeric: tabular-nums;
+  min-width: 32px;
+  text-align: right;
+}
+
+/* ── Mid row ─────────────────────────────────────────────────────────────── */
+
+.midRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-4);
+  align-items: start;
+}
+
+/* ── Focus / priority card ───────────────────────────────────────────────── */
+/* Top border uses purple-deep (#3525CD) — the active-state indicator colour */
+
+.focusCard {
+  border-top: 4px solid var(--purple-deep);
+}
+
+/* "TOP ACTION" badge: fill=#4F46E5, border 2px ink, text white — from SVG active btn */
+.focusBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  background-color: var(--purple);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-btn);
+  box-shadow: 2px 2px 0 var(--ink);
+  font-size: var(--text-11);
+  font-weight: var(--fw-extrabold);
+  color: #fff;
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.focusContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.focusTitle {
+  font-size: var(--text-16);
+  font-weight: var(--fw-extrabold);
+  color: var(--ink);
+  line-height: var(--lh-snug);
+}
+
+.focusMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+
+.focusDue {
+  font-size: var(--text-13);
+  font-weight: var(--fw-semibold);
+  color: var(--muted-ink);
+}
+
+.focusActions {
+  display: flex;
+  gap: var(--sp-2);
+  margin-top: var(--sp-2);
+}
+
+/* ── Daily snapshot metrics ──────────────────────────────────────────────── */
+
+.metricsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-3);
+}
+
+.metricItem {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: var(--sp-4);
+  background-color: var(--soft-gray);   /* #F6F3F2 */
+  border: 1px solid var(--gray-200);
+  border-radius: 4px;
+}
+
+.metricLabel {
+  font-size: var(--text-11);
+  font-weight: var(--fw-extrabold);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--muted-ink);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+/* Coloured dot — 8px circle, same as sidebar sync dot */
+.vectorDot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.metricValue {
+  font-size: 22px;
+  font-weight: var(--fw-black);
+  color: var(--ink);
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+.metricUnit {
+  font-size: var(--text-12);
+  font-weight: var(--fw-semibold);
+  color: var(--muted-ink);
+}
+
+.metricDelta {
+  font-size: var(--text-11);
+  font-weight: var(--fw-bold);
+}
+
+.deltaUp      { color: var(--green-accent); }
+.deltaDown    { color: var(--red); }
+.deltaNeutral { color: var(--muted-ink); }
+
+/* ── Vector tags ─────────────────────────────────────────────────────────── */
+/* From SVG: rx="1.5", exact fills per vector, border 1px ink
+   Mind:   #E2DFFF fill, text #4F46E5
+   Money:  #FFDAD7 fill, text #410004
+   Muscle: #6FFBBE fill, text #002113                                        */
+
+.vectorTag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 2px;                   /* rx=1.5 → 2px */
+  font-size: var(--text-11);
+  font-weight: var(--fw-extrabold);
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  line-height: 1.4;
+  border: 1px solid var(--ink);
+  white-space: nowrap;
+}
+
+.vectorMind   { background-color: var(--tag-mind-bg);   color: var(--purple); }
+.vectorMoney  { background-color: var(--tag-money-bg);  color: var(--red-deep); }
+.vectorMuscle { background-color: var(--tag-muscle-bg); color: var(--green-deep); }
+
+/* ── Priority chips ──────────────────────────────────────────────────────── */
+
+.priorityChip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  border-radius: 2px;
+  font-size: var(--text-10);
+  font-weight: var(--fw-extrabold);
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  border: 1px solid var(--ink);
+}
+
+.priorityHigh   { background-color: var(--red-soft);  color: var(--red-deep); }
+.priorityMedium { background-color: var(--gray-200);  color: var(--muted-ink); }
+.priorityLow    { background-color: var(--soft-gray); color: var(--muted-ink); }
+
+/* ── Status chips ────────────────────────────────────────────────────────── */
+
+.statusChip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  border-radius: 2px;
+  font-size: var(--text-10);
+  font-weight: var(--fw-extrabold);
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  border: 1px solid currentColor;
+}
+
+.statusActive    { color: var(--purple);       background-color: var(--tag-mind-bg); }
+.statusCompleted { color: var(--green);        background-color: rgba(0,83,56,0.08); }
+.statusOverdue   { color: var(--red);          background-color: var(--red-soft); }
+.statusUpcoming  { color: var(--muted-ink);    background-color: var(--gray-100); }
+
+/* ── Quests table ────────────────────────────────────────────────────────── */
+/* From SVG: table header row y=642–678, border-bottom 2px ink
+   Tab row: fill=#F6F3F2, rx=1, h=50 — lines 165-166
+   Active tab indicator: 20×20 rx=2.5, fill=#3525CD — line 167              */
+
+/* Overall progress bar above table: same style as tri-card tracks */
+.questProgress {
+  height: 6px;
+  background-color: var(--gray-100);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: var(--sp-4);
+}
+
+.questProgressFill {
+  height: 100%;
+  background-color: var(--green);
+  border-radius: 999px;
+  transition: width 400ms ease;
+}
+
+/* Filter tab strip: fill=#F6F3F2, border 2px ink, h=50, rx=1 */
+.questFilterRow {
+  display: flex;
+  background-color: var(--soft-gray);    /* #F6F3F2 */
+  border: 2px solid var(--ink);
+  border-radius: 1px;                    /* rx=1 from SVG */
+  margin-bottom: var(--sp-4);
+  overflow: hidden;
+}
+
+.questFilterTab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  padding: 0 var(--sp-3);
+  height: 50px;                          /* exact h=50 from SVG */
+  font-size: var(--text-13);
+  font-weight: var(--fw-semibold);
+  color: var(--muted-ink);
+  background: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  cursor: pointer;
+  transition: background-color 120ms ease;
+  position: relative;
+  min-height: unset;
+}
+
+.questFilterTab:hover { background-color: var(--gray-100); }
+
+/* Active tab: purple-deep indicator dot 20×20 rx=2.5 — from SVG line 167 */
+.questFilterTabActive {
+  color: var(--ink);
+  font-weight: var(--fw-bold);
+}
+
+.questFilterTabActive::before {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-indicator);  /* 2.5px */
+  background-color: var(--purple-deep);    /* #3525CD */
+  flex-shrink: 0;
+}
+
+.questTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-14);
+}
+
+.questTable thead tr {
+  border-bottom: 2px solid var(--ink);
+}
+
+.questTable th {
+  font-size: var(--text-11);
+  font-weight: var(--fw-extrabold);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--muted-ink);
+  text-align: left;
+  padding: var(--sp-2) var(--sp-3);
+  white-space: nowrap;
+}
+
+/* Column widths from SVG proportions */
+.thCheck    { width: 32px; }
+.thMain     { min-width: 200px; }
+.thVector   { width: 88px; }
+.thPriority { width: 90px; }
+.thDue      { width: 90px; }
+.thStatus   { width: 96px; }
+.thProgress { width: 96px; }
+
+.questRow {
+  border-bottom: 1px solid var(--gray-200);
+  transition: background-color 100ms ease;
+}
+.questRow:last-child { border-bottom: none; }
+.questRow:hover      { background-color: var(--soft-gray); }
+
+.questRowCompleted td { opacity: 0.5; }
+.questRowOverdue      { background-color: rgba(182,23,34,0.03); }
+
+.questTable td {
+  padding: var(--sp-3);
+  vertical-align: middle;
+}
+
+.tdCheck { text-align: center; }
+
+.questCheckbox {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: var(--green);
+}
+
+.questTitleBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: var(--text-14);
+  font-weight: var(--fw-semibold);
+  color: var(--ink);
+  cursor: pointer;
+  text-align: left;
+  min-height: unset;
+  transition: color 120ms ease;
+}
+.questTitleBtn:hover { color: var(--purple); }
+
+.overdueText { color: var(--red); font-weight: var(--fw-bold); }
+
+/* Inline progress track inside table rows */
+.inlineProgressTrack {
+  height: 6px;
+  background-color: var(--gray-100);
+  border: 1px solid var(--gray-200);
+  border-radius: 999px;
+  overflow: hidden;
+  min-width: 60px;
+}
+.inlineProgressFill {
+  height: 100%;
+  background-color: var(--purple);
+  border-radius: 999px;
+}
+
+.noProgress { color: var(--gray-200); font-size: var(--text-14); }
+
+/* ── Quick actions ───────────────────────────────────────────────────────── */
+/* Same button anatomy as SVG: rx=2, border 2px ink, shadow dx=1 dy=1 */
+
+.quickActions {
+  display: flex;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+
+.qaBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-4);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-btn);     /* 2px */
+  font-size: var(--text-13);
+  font-weight: var(--fw-bold);
+  cursor: pointer;
+  background-color: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--shadow-hard-sm);    /* 1px 1px */
+  transition: box-shadow 100ms ease, transform 100ms ease;
+  min-height: 40px;
+}
+.qaBtn:hover {
+  box-shadow: var(--shadow-hard);
+  transform: translate(-1px, -1px);
+}
+.qaBtn:active {
+  box-shadow: none;
+  transform: translate(1px, 1px);
+}
+
+/* Tinted backgrounds matching vector tags */
+.qaBtnMind   { background-color: var(--tag-mind-bg); }
+.qaBtnMoney  { background-color: var(--tag-money-bg); }
+.qaBtnMuscle { background-color: var(--tag-muscle-bg); }
+.qaBtnNeutral { background-color: var(--soft-gray); }
+
+/* ── Upcoming / reminders ────────────────────────────────────────────────── */
+
+.upcomingList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.upcomingItem {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  padding: var(--sp-4) 0;
+  border-bottom: 1px solid var(--gray-200);
+}
+.upcomingItem:last-child { border-bottom: none; }
+
+/* Coloured ring dots */
+.upcomingDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 3px;
+  border: 2px solid currentColor;
+}
+.dotMind   { color: var(--purple);       background-color: var(--tag-mind-bg); }
+.dotMoney  { color: var(--red);          background-color: var(--red-soft); }
+.dotMuscle { color: var(--green);        background-color: rgba(111,251,190,0.3); }
+
+.upcomingTitle {
+  font-size: var(--text-14);
+  font-weight: var(--fw-semibold);
+  color: var(--ink);
+}
+.upcomingTime {
+  font-size: var(--text-12);
+  font-weight: var(--fw-medium);
+  color: var(--muted-ink);
+  margin-top: 2px;
+}
+
+/* ── Empty state ─────────────────────────────────────────────────────────── */
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-4);
+  padding: var(--sp-4) 0;
+}
+.emptyStateText { font-size: var(--text-14); color: var(--muted-ink); }
+
+/* ── Demo notice ─────────────────────────────────────────────────────────── */
+
+.demoNote {
+  font-size: var(--text-11);
+  color: var(--muted-ink);
+  font-weight: var(--fw-medium);
+  padding: var(--sp-3) var(--sp-4);
+  background-color: var(--gray-100);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-sm);
+}
+
+/* ── Skeleton ─────────────────────────────────────────────────────────────── */
+
+.skeleton {
+  display: block;
+  background: linear-gradient(90deg, var(--gray-100) 0%, var(--gray-200) 50%, var(--gray-100) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: var(--radius-sm);
+}
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.skeletonEyebrow { width: 80px; height: 12px; margin-bottom: 10px; }
+.skeletonTitle   { width: 220px; height: 32px; }
+.skeletonGrid    { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-4); }
+.skeletonCard    { height: 122px; border-radius: 4px; }
+
+/* ── Responsive ───────────────────────────────────────────────────────────── */
+
+@media (max-width: 1199px) {
+  .triGrid  { gap: var(--sp-3); }
+  .midRow   { gap: var(--sp-3); }
+}
+
+@media (max-width: 899px) {
+  .triGrid  { grid-template-columns: 1fr; }
+  .midRow   { grid-template-columns: 1fr; }
+  .metricsGrid { grid-template-columns: 1fr 1fr; }
+  .pageHeader { flex-direction: column; align-items: flex-start; gap: var(--sp-3); }
+
+  /* Collapse table on medium screens */
+  .questTable thead { display: none; }
+  .questTable, .questTable tbody, .questTable tr, .questTable td { display: block; }
+  .questTable tr {
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--sp-2);
+    padding: var(--sp-3);
+    background-color: var(--surface);
+  }
+  .questTable td { padding: 2px var(--sp-2); border: none; }
+  .tdCheck { text-align: left; }
+  .skeletonGrid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 639px) {
+  .metricsGrid { grid-template-columns: 1fr; }
+  .quickActions { flex-direction: column; }
+  .qaBtn { width: 100%; justify-content: flex-start; }
+}

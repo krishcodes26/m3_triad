@@ -1,0 +1,208 @@
+{
+  "rank_ladder": [
+    {
+      "rank_code": "E",
+      "name": "Novice",
+      "description": "Starting rank - welcome to the system",
+      "min_character_level": 1,
+      "max_character_level": 19,
+      "requirements": {
+        "min_lifetime_xp": 0,
+        "min_vector_levels": {
+          "mind": 1,
+          "muscle": 1,
+          "money": 1
+        },
+        "min_harmony": 0
+      },
+      "rewards": {
+        "equipment_slots": 1,
+        "titles": ["novice_title"],
+        "guild_authority": "basic"
+      },
+      "sort_order": 1,
+      "is_active": true,
+      "config_version": "1.0"
+    },
+    {
+      "rank_code": "D",
+      "name": "Apprentice",
+      "description": "Progression tier - developing proficiency",
+      "min_character_level": 15,
+      "max_character_level": 19,
+      "requirements": {
+        "min_lifetime_xp": 10000,
+        "min_vector_levels": {
+          "mind": 10,
+          "muscle": 10,
+          "money": 10
+        },
+        "min_harmony": 50
+      },
+      "rewards": {
+        "equipment_slots": 2,
+        "titles": ["apprentice_title"],
+        "guild_authority": "moderate"
+      },
+      "sort_order": 2,
+      "is_active": true,
+      "config_version": "1.0",
+      "note": "PENDING PRODUCT CONFIRMATION"
+    },
+    {
+      "rank_code": "C",
+      "name": "Warrior",
+      "description": "Competent fighter - proven capability",
+      "min_character_level": 20,
+      "max_character_level": 29,
+      "requirements": {
+        "min_lifetime_xp": 20000,
+        "min_vector_levels": {
+          "mind": 15,
+          "muscle": 15,
+          "money": 15
+        },
+        "min_harmony": 55,
+        "required_badges": []
+      },
+      "rewards": {
+        "equipment_slots": 2,
+        "titles": ["warrior_title"],
+        "guild_authority": "moderate"
+      },
+      "sort_order": 3,
+      "is_active": true,
+      "config_version": "1.0"
+    },
+    {
+      "rank_code": "B",
+      "name": "Elite",
+      "description": "Elite warrior - rare achievement",
+      "min_character_level": 30,
+      "max_character_level": 44,
+      "requirements": {
+        "min_lifetime_xp": 65000,
+        "min_vector_levels": {
+          "mind": 25,
+          "muscle": 25,
+          "money": 25
+        },
+        "min_harmony": 60,
+        "required_badges": []
+      },
+      "rewards": {
+        "equipment_slots": 4,
+        "titles": ["elite_title"],
+        "guild_authority": "high"
+      },
+      "sort_order": 4,
+      "is_active": true,
+      "config_version": "1.0"
+    },
+    {
+      "rank_code": "A",
+      "name": "Master",
+      "description": "Master craftsman - expert level",
+      "min_character_level": 45,
+      "max_character_level": 59,
+      "requirements": {
+        "min_lifetime_xp": 200000,
+        "min_vector_levels": {
+          "mind": 40,
+          "muscle": 40,
+          "money": 40
+        },
+        "min_harmony": 65,
+        "required_badges": []
+      },
+      "rewards": {
+        "equipment_slots": 6,
+        "titles": ["master_title"],
+        "guild_authority": "very_high"
+      },
+      "sort_order": 5,
+      "is_active": true,
+      "config_version": "1.0",
+      "note": "PENDING PRODUCT CONFIRMATION"
+    },
+    {
+      "rank_code": "S",
+      "name": "Grandmaster",
+      "description": "Grandmaster - legendary mastery",
+      "min_character_level": 60,
+      "max_character_level": 74,
+      "requirements": {
+        "min_lifetime_xp": 500000,
+        "min_vector_levels": {
+          "mind": 55,
+          "muscle": 55,
+          "money": 55
+        },
+        "min_harmony": 70,
+        "required_badges": []
+      },
+      "rewards": {
+        "equipment_slots": 8,
+        "titles": ["grandmaster_title"],
+        "guild_authority": "supreme"
+      },
+      "sort_order": 6,
+      "is_active": true,
+      "config_version": "1.0",
+      "note": "PENDING PRODUCT CONFIRMATION"
+    },
+    {
+      "rank_code": "SS",
+      "name": "Legend",
+      "description": "Legend - transcendent power",
+      "min_character_level": 75,
+      "max_character_level": 89,
+      "requirements": {
+        "min_lifetime_xp": 1000000,
+        "min_vector_levels": {
+          "mind": 70,
+          "muscle": 70,
+          "money": 70
+        },
+        "min_harmony": 75,
+        "required_badges": []
+      },
+      "rewards": {
+        "equipment_slots": 10,
+        "titles": ["legend_title"],
+        "guild_authority": "ultimate"
+      },
+      "sort_order": 7,
+      "is_active": true,
+      "config_version": "1.0",
+      "note": "PENDING PRODUCT CONFIRMATION"
+    },
+    {
+      "rank_code": "SSS",
+      "name": "Mythic",
+      "description": "Mythic - god-like achievement",
+      "min_character_level": 90,
+      "max_character_level": 999,
+      "requirements": {
+        "min_lifetime_xp": 2000000,
+        "min_vector_levels": {
+          "mind": 85,
+          "muscle": 85,
+          "money": 85
+        },
+        "min_harmony": 80,
+        "required_badges": []
+      },
+      "rewards": {
+        "equipment_slots": 12,
+        "titles": ["mythic_title"],
+        "guild_authority": "mythic"
+      },
+      "sort_order": 8,
+      "is_active": true,
+      "config_version": "1.0",
+      "note": "PENDING PRODUCT CONFIRMATION"
+    }
+  ],
+  "general_note": "All rank requirements marked PENDING are sample values derived from design examples. Exact thresholds and harmony requirements must be confirmed with product before production deployment."
+}

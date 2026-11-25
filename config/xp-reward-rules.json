@@ -1,0 +1,137 @@
+{
+  "reward_rules": [
+    {
+      "rule_key": "habit_completion",
+      "source_type": "habit",
+      "vector": "mind",
+      "base_xp": 20,
+      "cap_scope": "per_occurrence",
+      "cap_count": 1,
+      "cooldown_seconds": 0,
+      "verification_level": "app_validated",
+      "active_from": "2026-01-01T00:00:00Z",
+      "config_version": "1.0"
+    },
+    {
+      "rule_key": "workout_session",
+      "source_type": "workout",
+      "vector": "muscle",
+      "base_xp": 50,
+      "cap_scope": "per_session",
+      "cap_count": 1,
+      "cooldown_seconds": 0,
+      "verification_level": "app_validated",
+      "active_from": "2026-01-01T00:00:00Z",
+      "config_version": "1.0"
+    },
+    {
+      "rule_key": "nutrition_protein_target",
+      "source_type": "nutrition",
+      "vector": "muscle",
+      "base_xp": 40,
+      "cap_scope": "per_24h",
+      "cap_count": 1,
+      "cooldown_seconds": 86400,
+      "verification_level": "app_validated",
+      "active_from": "2026-01-01T00:00:00Z",
+      "config_version": "1.0"
+    },
+    {
+      "rule_key": "focus_session",
+      "source_type": "focus",
+      "vector": "mind",
+      "base_xp": 25,
+      "cap_scope": "per_session",
+      "cap_count": 1,
+      "cooldown_seconds": 0,
+      "verification_level": "app_validated",
+      "active_from": "2026-01-01T00:00:00Z",
+      "config_version": "1.0"
+    },
+    {
+      "rule_key": "reading_session",
+      "source_type": "focus",
+      "vector": "mind",
+      "base_xp": 20,
+      "cap_scope": "per_session",
+      "cap_count": 1,
+      "cooldown_seconds": 0,
+      "verification_level": "app_validated",
+      "active_from": "2026-01-01T00:00:00Z",
+      "config_version": "1.0"
+    },
+    {
+      "rule_key": "workout_pr",
+      "source_type": "workout",
+      "vector": "muscle",
+      "base_xp": 50,
+      "cap_scope": "per_pr",
+      "cap_count": 1,
+      "cooldown_seconds": 0,
+      "verification_level": "app_validated",
+      "active_from": "2026-01-01T00:00:00Z",
+      "config_version": "1.0"
+    },
+    {
+      "rule_key": "mission_task",
+      "source_type": "mission",
+      "vector": "mind",
+      "base_xp": 30,
+      "cap_scope": "per_task",
+      "cap_count": 1,
+      "cooldown_seconds": 0,
+      "verification_level": "system_verified",
+      "active_from": "2026-01-01T00:00:00Z",
+      "config_version": "1.0"
+    },
+    {
+      "rule_key": "mission_milestone",
+      "source_type": "mission",
+      "vector": "money",
+      "base_xp": 120,
+      "cap_scope": "per_milestone",
+      "cap_count": 1,
+      "cooldown_seconds": 0,
+      "verification_level": "system_verified",
+      "active_from": "2026-01-01T00:00:00Z",
+      "config_version": "1.0"
+    },
+    {
+      "rule_key": "money_action",
+      "source_type": "money",
+      "vector": "money",
+      "base_xp": 30,
+      "cap_scope": "per_action",
+      "cap_count": 1,
+      "cooldown_seconds": 0,
+      "verification_level": "self_reported",
+      "active_from": "2026-01-01T00:00:00Z",
+      "config_version": "1.0"
+    },
+    {
+      "rule_key": "quest_completion",
+      "source_type": "quest",
+      "vector": "mind",
+      "base_xp": 25,
+      "cap_scope": "per_quest",
+      "cap_count": 1,
+      "cooldown_seconds": 0,
+      "verification_level": "app_validated",
+      "active_from": "2026-01-01T00:00:00Z",
+      "config_version": "1.0"
+    },
+    {
+      "rule_key": "badge_unlock",
+      "source_type": "badge",
+      "vector": "mind",
+      "base_xp": 100,
+      "cap_scope": "per_badge",
+      "cap_count": 1,
+      "cooldown_seconds": 0,
+      "verification_level": "system_verified",
+      "active_from": "2026-01-01T00:00:00Z",
+      "config_version": "1.0",
+      "note": "Base XP varies by badge definition"
+    }
+  ]
+}

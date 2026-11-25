@@ -1,0 +1,220 @@
+/* ============================================================================
+   AppShell — Sidebar + main layout
+   Exact from Aside.svg (256×752px):
+   - Sidebar: 256px wide, white fill, 2px ink right border
+   - Brand area: y=16–78, bottom separator 2px ink
+   - Nav items: y≈174 active row height=40, fill=#4F46E5, rx=2, stroke 2px ink
+   - XP panel: y=644, fill=#F6F3F2, rx=2, stroke 2px ink, shadow dx=3 dy=3
+   - Sync row: y=700, fill=#EBE7E7, rx=2, stroke 2px ink
+   ============================================================================ */
+
+.shell {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--canvas);
+}
+
+/* ── Sidebar ──────────────────────────────────────────────────────────────── */
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--sidebar-w);   /* 256px */
+  height: 100vh;
+  background-color: var(--surface);
+  border-right: 2px solid var(--ink);  /* exact from SVG path stroke */
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  z-index: var(--z-sidebar);
+}
+
+/* Brand block: y=16–78, bottom border = 2px ink (from path-3-inside-2) */
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px var(--sp-4) 16px var(--sp-5);
+  border-bottom: 2px solid var(--ink);
+  min-height: 62px;
+}
+
+.wordmark {
+  font-size: 13px;
+  font-weight: var(--fw-black);
+  letter-spacing: 2px;
+  color: var(--ink);
+  text-transform: uppercase;
+}
+
+/* Level badge: rx=2, fill=#6FFBBE, stroke 2px ink, shadow dx=2 dy=2
+   Text: fill=#002113, weight≈800 */
+.levelBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 7px;
+  background-color: var(--green-bright);  /* #6FFBBE */
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-badge);     /* 2px */
+  box-shadow: 2px 2px 0 var(--ink);
+  font-size: var(--text-11);
+  font-weight: var(--fw-extrabold);
+  color: var(--green-deep);               /* #002113 */
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+/* Nav list */
+.navList {
+  list-style: none;
+  padding: var(--sp-3) var(--sp-2);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+/* Default nav item */
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: 10px var(--sp-3);
+  border-radius: var(--radius-btn);  /* 2px — from active row rx=2 */
+  font-size: var(--text-14);
+  font-weight: var(--fw-semibold);
+  color: var(--muted-ink);
+  text-decoration: none;
+  transition: background-color 120ms ease, color 120ms ease;
+  border: 1px solid transparent;
+  min-height: 40px;  /* exact row height from SVG */
+}
+
+.navItem:hover {
+  background-color: var(--soft-gray);
+  color: var(--ink);
+}
+
+/* Active: fill=#4F46E5, stroke 2px ink, text white — exact from SVG filter1 */
+.navItemActive {
+  background-color: var(--purple);  /* #4F46E5 */
+  color: #fff;
+  border: 2px solid var(--ink);
+  font-weight: var(--fw-bold);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+.navItemActive:hover {
+  background-color: var(--purple-deep);
+  color: #fff;
+}
+
+.navIcon {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
+/* XP panel: fill=#F6F3F2, rx=2, border 2px ink, shadow dx=3 dy=3 */
+.xpPanel {
+  margin: 0 var(--sp-2) var(--sp-2);
+  padding: var(--sp-4);
+  background-color: var(--soft-gray);   /* #F6F3F2 */
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-btn);     /* 2px */
+  box-shadow: 3px 3px 0 var(--ink);    /* dx=3 dy=3 from SVG filter2 */
+}
+
+.xpHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: var(--sp-2);
+}
+
+.xpLabel {
+  font-size: var(--text-10);
+  font-weight: var(--fw-extrabold);
+  letter-spacing: var(--ls-label);
+  color: var(--muted-ink);
+  text-transform: uppercase;
+}
+
+.xpValue {
+  font-size: var(--text-10);
+  font-weight: var(--fw-bold);
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* XP track: rx=5 (height=10), fill fill=#F0EDEC, border 2px ink
+   Fill: width=166.91/216 ≈ 77%, fill=#4F46E5 — from SVG lines 34-36 */
+.xpTrack {
+  height: 10px;
+  background-color: var(--gray-100);    /* #F0EDEC */
+  border: 2px solid var(--ink);
+  border-radius: 999px;                 /* rx=5 → pill */
+  overflow: hidden;
+}
+
+.xpFill {
+  height: 100%;
+  background-color: var(--purple);
+  border-radius: 999px;
+  transition: width 400ms ease;
+}
+
+/* Sync row: fill=#EBE7E7, rx=2, border 2px ink, shadow dx=2 dy=2 */
+.syncRow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin: 0 var(--sp-2) var(--sp-3);
+  padding: 10px var(--sp-3);
+  background-color: var(--gray-200);    /* #EBE7E7 */
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-btn);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+/* Green dot — #006E4B fill, r=4 → 8px circle from SVG line 42 */
+.syncDot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--green-accent);  /* #006E4B */
+  flex-shrink: 0;
+}
+
+.syncText {
+  font-size: var(--text-11);
+  font-weight: var(--fw-bold);
+  color: var(--green);                    /* #005338 from SVG text fill */
+  letter-spacing: 0.3px;
+}
+
+/* ── Main content ─────────────────────────────────────────────────────────── */
+
+.main {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  min-width: 0;
+}
+
+/* ── Responsive ───────────────────────────────────────────────────────────── */
+
+@media (max-width: 899px) {
+  .sidebar { width: 56px; }
+  .wordmark, .levelBadge, .xpPanel, .syncRow { display: none; }
+  .navItem { justify-content: center; padding: 10px; border: none; box-shadow: none; }
+  .navItemActive { border: none; box-shadow: none; border-radius: var(--radius-btn); }
+  .navItem span { display: none; }
+  .navIcon { width: 18px; height: 18px; }
+  .main { margin-left: 56px; }
+}
+
+@media (max-width: 639px) {
+  .sidebar { display: none; }
+  .main { margin-left: 0; }
+}

@@ -1,0 +1,272 @@
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                     M3 TRIAD DATABASE ARCHITECTURE                              ║
+║                       (24 Tables, 7 Enums, RLS Enabled)                         ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+
+                              ┌─────────────────┐
+                              │   USERS (Auth)  │
+                              │   ┌───────────┐ │
+                              │   │ id, email │ │
+                              │   └───────────┘ │
+                              └────────┬────────┘
+                                       │
+                 ┌─────────────────────┼─────────────────────┐
+                 │                     │                     │
+        ┌────────▼────────┐   ┌────────▼────────┐   ┌────────▼────────┐
+        │  USER_PROFILES  │   │CHARACTER_PROG   │   │VECTOR_PROGRESS  │
+        ├─────────────────┤   ├─────────────────┤   ├─────────────────┤
+        │ display_name    │   │ level (1-∞)     │   │ mind: level/xp  │
+        │ avatar_url      │   │ rank (Novice)   │   │ money: level/xp │
+        │ timezone (UTC)  │   │ total_xp        │   │ muscle: level/xp│
+        │ privacy_mode    │   │                 │   │                 │
+        └────────────────┘   └─────────────────┘   └─────────────────┘
+
+
+┌────────────────────────────────────────────────────────────────────────────────┐
+│                           FEATURE MODULES                                      │
+└────────────────────────────────────────────────────────────────────────────────┘
+
+
+╔═══════════════════════════╗      ╔═══════════════════════════╗
+║   MISSIONS & TASKS        ║      ║   HABITS & STREAKS        ║
+╠═══════════════════════════╣      ╠═══════════════════════════╣
+│                           │      │                           │
+│  ┌─────────────────┐      │      │  ┌─────────────────┐      │
+│  │   MISSIONS      │      │      │  │     HABITS      │      │
+│  ├─────────────────┤      │      │  ├─────────────────┤      │
+│  │ user_id         │      │      │  │ user_id         │      │
+│  │ title           │      │      │  │ name            │      │
+│  │ vector (Mind)   │      │      │  │ vector (Mind)   │      │
+│  │ status (active) │      │      │  │ frequency       │      │
+│  │ deadline        │      │      │  │ schedule_days   │      │
+│  │ goal            │      │      │  │ target_value    │      │
+│  └────────┬────────┘      │      │  └────────┬────────┘      │
+│           │               │      │           │               │
+│      ┌────▼────┐          │      │      ┌────▼────────────┐  │
+│      │          │          │      │      │                │  │
+│  ┌───▼──────┐ ┌─▼──────┐  │      │  ┌───▼──────────────┐  │  │
+│  │MILESTONES│ │ TASKS  │  │      │  │HABIT_CHECK_INS   │  │  │
+│  ├──────────┤ ├────────┤  │      │  ├──────────────────┤  │  │
+│  │ title    │ │ title  │  │      │  │ scheduled_date   │  │  │
+│  │ due_date │ │ status │  │      │  │ completion_value │  │  │
+│  │completed │ │priority│  │      │  │ status           │  │  │
+│  └──────────┘ │due_date│  │      │  │ note             │  │  │
+│               │estimate│  │      │  └──────────────────┘  │  │
+│               └────────┘  │      │                        │  │
+│               │ TASK_EVENTS       └────────────────────────┘  │
+│               │ (audit log)                                   │
+└───────────────┼──────────┘      └───────────────────────────┘
+                │
+
+
+╔═══════════════════════════╗      ╔═══════════════════════════╗
+║   WORKOUTS & FITNESS      ║      ║   NUTRITION TRACKING      ║
+╠═══════════════════════════╣      ╠═══════════════════════════╣
+│                           │      │                           │
+│  ┌─────────────────┐      │      │  ┌─────────────────┐      │
+│  │WORKOUT_ROUTINES│      │      │  │   MEAL_ENTRIES  │      │
+│  ├─────────────────┤      │      │  ├─────────────────┤      │
+│  │ user_id         │      │      │  │ user_id         │      │
+│  │ name            │      │      │  │ entry_date      │      │
+│  │ description     │      │      │  │ meal_category   │      │
+│  └────────┬────────┘      │      │  │ calories        │      │
+│           │               │      │  │ protein_g       │      │
+│      ┌────▼──────────────┐│      │  │ carbs_g         │      │
+│      │ROUTINE_EXERCISES  ││      │  │ fat_g           │      │
+│      ├───────────────────┤│      │  └────────┬────────┘      │
+│      │ exercise_id      ││      │           │               │
+│      │ target_sets     ││      │      ┌────▼──────┐         │
+│      │ target_reps    ││      │      │            │         │
+│      └───────────────────┘│      │   ┌─▼──────┐           │
+│                           │      │   │FOOD_   │           │
+│  ┌─────────────────┐      │      │   │ITEMS   │           │
+│  │WORKOUT_SESSIONS│      │      │   ├────────┤           │
+│  ├─────────────────┤      │      │   │name    │           │
+│  │ user_id         │      │      │   │calories│           │
+│  │ routine_id      │      │      │   │macros  │           │
+│  │ start_time      │      │      │   └────────┘           │
+│  │ end_time        │      │      │ (Global, not          │
+│  │ duration_seconds│      │      │  user-scoped)         │
+│  └────────┬────────┘      │      │                        │
+│           │               │      └────────────────────────┘
+│      ┌────▼──────────┐    │
+│      │WORKOUT_SETS   │    │
+│      ├───────────────┤    │
+│      │ exercise_id   │    │
+│      │ load          │    │
+│      │ reps          │    │
+│      │ set_type      │    │
+│      │ rpe / rir     │    │
+│      │ completed     │    │
+│      └───────┬───────┘    │
+│              │            │
+│         ┌────▼──────────┐ │
+│         │PERSONAL_      │ │
+│         │RECORDS        │ │
+│         ├───────────────┤ │
+│         │ exercise_id   │ │
+│         │ record_type   │ │
+│         │ value         │ │
+│         │ achieved_date │ │
+│         └───────────────┘ │
+│                           │
+│  ┌─────────────────┐      │
+│  │  EXERCISES      │      │
+│  ├─────────────────┤      │
+│  │ name            │      │
+│  │ movement_cat    │      │
+│  │ equipment       │      │
+│  │ muscle_group    │      │
+│  │ user_id (NULL   │      │
+│  │  = default)     │      │
+│  └─────────────────┘      │
+│                           │
+└───────────────────────────┘
+
+
+╔═══════════════════════════╗      ╔═══════════════════════════╗
+║   TIME & REFLECTION       ║      ║   PROGRESSION & REWARDS   ║
+╠═══════════════════════════╣      ╠═══════════════════════════╣
+│                           │      │                           │
+│  ┌─────────────────┐      │      │  ┌─────────────────┐      │
+│  │FOCUS_SESSIONS   │      │      │  │  XP_LEDGER      │      │
+│  ├─────────────────┤      │      │  ├─────────────────┤      │
+│  │ user_id         │      │      │  │ user_id         │      │
+│  │ start_time      │      │      │  │ vector (Mind)   │      │
+│  │ end_time        │      │      │  │ source_type     │      │
+│  │ category        │      │      │  │ source_id       │      │
+│  │ duration_secs   │      │      │  │ amount (XP)     │      │
+│  │ task_id         │      │      │  │ rule_version    │      │
+│  └─────────────────┘      │      │  │ created_at      │      │
+│                           │      │  │ reverses_event  │      │
+│  ┌─────────────────┐      │      │  └─────────────────┘      │
+│  │CALENDAR_BLOCKS  │      │      │                           │
+│  ├─────────────────┤      │      │  ┌─────────────────┐      │
+│  │ user_id         │      │      │  │ACHIEVEMENTS     │      │
+│  │ title           │      │      │  ├─────────────────┤      │
+│  │ start_time      │      │      │  │ name            │      │
+│  │ end_time        │      │      │  │ description     │      │
+│  │ linked_entity   │      │      │  │ criteria        │      │
+│  │ category        │      │      │  │ icon_url        │      │
+│  │ recurrence_rule │      │      │  └────────┬────────┘      │
+│  └─────────────────┘      │      │           │               │
+│                           │      │      ┌────▼──────────────┐│
+│  ┌─────────────────┐      │      │      │USER_ACHIEVEMENTS ││
+│  │DAILY_           │      │      │      ├───────────────────┤│
+│  │REFLECTIONS      │      │      │      │ user_id          ││
+│  ├─────────────────┤      │      │      │ achievement_id   ││
+│  │ user_id         │      │      │      │ unlocked_at      ││
+│  │ reflection_date │      │      │      │ evidence_ref     ││
+│  │ reflection_text │      │      │      └──────────────────┘│
+│  │ energy_level    │      │      │                          │
+│  │ mood_score      │      │      └──────────────────────────┘
+│  └─────────────────┘      │
+│                           │
+└───────────────────────────┘
+
+
+╔═══════════════════════════╗      ╔═══════════════════════════╗
+║   COMMUNICATIONS          ║      ║   INTEGRATIONS            ║
+╠═══════════════════════════╣      ╠═══════════════════════════╣
+│                           │      │                           │
+│  ┌─────────────────┐      │      │  ┌──────────────────────┐ │
+│  │NOTIFICATIONS    │      │      │  │INTEGRATION_          │ │
+│  ├─────────────────┤      │      │  │CONNECTIONS           │ │
+│  │ user_id         │      │      │  ├──────────────────────┤ │
+│  │ type            │      │      │  │ user_id              │ │
+│  │ title / body    │      │      │  │ provider (Strava)    │ │
+│  │ priority        │      │      │  │ scopes / perms       │ │
+│  │ read / archived │      │      │  │ status (connected)   │ │
+│  │ action_dest     │      │      │  │ sync_cursor          │ │
+│  └────────┬────────┘      │      │  │ last_sync_at         │ │
+│           │               │      │  └──────────────────────┘ │
+│      ┌────▼──────────────┐│      │                           │
+│      │NOTIFICATION_      ││      │  (For future integrations:│
+│      │PREFERENCES        ││      │   Strava, HealthifyMe,   │
+│      ├───────────────────┤│      │   Hevy, banks, etc.)    │
+│      │ user_id          ││      │                           │
+│      │ channel (push)    ││      └───────────────────────────┘
+│      │ enabled           ││
+│      │ quiet_hours_start ││
+│      │ quiet_hours_end   ││
+│      │ timezone          ││
+│      └───────────────────┘│
+│                           │
+└───────────────────────────┘
+
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                           ENUM TYPES (7 Total)                                 ║
+╠════════════════════════════════════════════════════════════════════════════════╣
+║                                                                                ║
+║  vector                 →  'mind', 'money', 'muscle'                          ║
+║  mission_status         →  'draft', 'active', 'paused', 'completed', 'archived'║
+║  task_status            →  'not_started', 'in_progress', 'blocked', 'completed'║
+║  habit_frequency        →  'daily', 'weekly', 'custom'                        ║
+║  set_type               →  'working', 'warmup', 'drop_set', 'rest_pause'      ║
+║  notification_priority  →  'low', 'normal', 'high', 'critical'                ║
+║  notification_channel   →  'in_app', 'push', 'email'                          ║
+║                                                                                ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                        DATA FLOW & XP PROGRESSION                              ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+User performs action:
+  │
+  ├─→ Complete Task          → XP_LEDGER entry (mind/money/muscle)
+  ├─→ Check Habit            → XP_LEDGER entry + adherence tracking
+  ├─→ Log Workout            → XP_LEDGER entry (muscle) + PR detection
+  ├─→ Log Meals              → Nutrition tracking (no auto-XP yet)
+  ├─→ Complete Focus Session → XP_LEDGER entry (mind)
+  │
+  └─→ XP_LEDGER accumulates
+      │
+      ├─→ VECTOR_PROGRESS updates (level/xp per vector)
+      ├─→ CHARACTER_PROGRESS updates (overall level/rank)
+      └─→ ACHIEVEMENTS checked (badges unlocked)
+           │
+           └─→ USER_ACHIEVEMENTS created
+
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                            ROW LEVEL SECURITY                                  ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+✅ ENABLED ON ALL 24 TABLES
+
+Access Pattern:
+  - User can ONLY see/modify their own data
+  - auth.uid() enforced at database level
+  - No manual permission checks needed
+  - Exercises and Achievements are global (read-only)
+  - Hierarchical access: tasks → missions → user_id check
+
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                           QUICK STATISTICS                                     ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+Tables:               24
+Enums:                7
+Indexes:              70+
+Foreign Keys:         50+
+RLS Policies:         150+
+TypeScript Types:     100%
+Utility Functions:    90+
+
+Relations:
+  One User    →  Many Missions, Habits, Workouts, Meals, etc.
+  One Mission →  Many Milestones + Tasks
+  One Workout →  Many Sets
+  One Habit   →  Many Check-ins
+
+Status:  🟢 PRODUCTION READY
+
+
+═════════════════════════════════════════════════════════════════════════════════
+                        Your M3 Triad Backend is Ready!
+═════════════════════════════════════════════════════════════════════════════════
