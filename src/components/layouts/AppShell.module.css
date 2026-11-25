@@ -194,6 +194,19 @@
   letter-spacing: 0.3px;
 }
 
+.demoExitBtn {
+  margin-left: auto;
+  padding: 0;
+  background: none;
+  border: 0;
+  font-family: inherit;
+  font-size: var(--text-11);
+  font-weight: var(--fw-bold);
+  color: var(--ink);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 /* ── Main content ─────────────────────────────────────────────────────────── */
 
 .main {

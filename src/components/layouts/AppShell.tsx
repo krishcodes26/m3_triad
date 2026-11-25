@@ -1,7 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { useAuth } from '@/app/providers';
+import { disableDemoMode } from '@/lib/demo';
 import styles from './AppShell.module.css';
 
 const navItems = [
@@ -19,6 +21,13 @@ const navItems = [
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const { isDemo } = useAuth();
+
+  function exitDemo() {
+    disableDemoMode();
+    router.replace('/auth/login');
+  }
 
   return (
     <div className={styles.shell}>
@@ -62,7 +71,12 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         {/* Sync state */}
         <div className={styles.syncRow}>
           <span className={styles.syncDot} aria-hidden="true" />
-          <span className={styles.syncText}>Live · synced</span>
+          <span className={styles.syncText}>{isDemo ? 'Demo · local data' : 'Live · synced'}</span>
+          {isDemo && (
+            <button type="button" onClick={exitDemo} className={styles.demoExitBtn}>
+              Exit demo
+            </button>
+          )}
         </div>
       </nav>
 

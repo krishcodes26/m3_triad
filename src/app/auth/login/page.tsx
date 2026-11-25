@@ -4,11 +4,12 @@ import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { signIn, verifyOtp, sendOtp } from '@/lib/supabase';
+import { enableDemoMode, disableDemoMode } from '@/lib/demo';
 import styles from './page.module.css';
 
 // ── Demo credentials (design inspection only) ──────────────────────────────
-const DEMO_EMAIL = 'demo@m3triad.dev';
-const DEMO_PASSWORD = 'Demo@12345!';
+const DEMO_EMAIL = process.env.NEXT_PUBLIC_DEMO_EMAIL || 'demo@m3triad.dev';
+const DEMO_PASSWORD = process.env.NEXT_PUBLIC_DEMO_PASSWORD || 'Demo@12345!';
 
 type Step = 'login' | 'otp';
 
@@ -140,13 +141,29 @@ export default function LoginPage() {
   async function handleDemoLogin() {
     setLoading(true);
     setErrors({});
-    const { error } = await signIn(DEMO_EMAIL, DEMO_PASSWORD);
-    if (error) {
-      setErrors({ submit: 'Demo account unavailable — check Supabase.' });
-      setLoading(false);
+
+    // 1. Prefer the real hosted demo account when one exists.
+    let signedIn = false;
+    try {
+      const { error } = await signIn(DEMO_EMAIL, DEMO_PASSWORD);
+      signedIn = !error;
+    } catch {
+      signedIn = false;
+    }
+
+    if (signedIn) {
+      disableDemoMode();
+      router.push('/dashboard');
       return;
     }
-    router.push('/dashboard');
+
+    // 2. No reachable Supabase demo user (missing account, unconfirmed email
+    //    or a rate-limited mailbox). Open the self-contained local demo so
+    //    the button always works — data lives in the browser.
+    console.warn('Supabase demo sign-in failed; opening the local demo instead.');
+    enableDemoMode();
+    // Full navigation so AuthProvider picks the demo session up on mount.
+    window.location.assign('/dashboard');
   }
 
   async function handleResend() {
