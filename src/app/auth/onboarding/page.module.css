@@ -1,4 +1,4 @@
-.container {
+﻿.container {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -62,7 +62,7 @@
   font-weight: var(--text-label-weight);
   color: var(--purple);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: var(--ls-label);
 }
 
 .form {
@@ -83,7 +83,7 @@
   font-weight: var(--text-label-weight);
   color: var(--muted-ink);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: var(--ls-label);
 }
 
 .required {
@@ -265,3 +265,4 @@
     min-width: auto;
   }
 }
+

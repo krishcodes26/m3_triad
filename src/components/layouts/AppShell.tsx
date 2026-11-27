@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useAuth } from '@/app/providers';
 import { disableDemoMode } from '@/lib/demo';
 import styles from './AppShell.module.css';
@@ -21,12 +21,12 @@ const navItems = [
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const router = useRouter();
   const { isDemo } = useAuth();
 
   function exitDemo() {
     disableDemoMode();
-    router.replace('/auth/login');
+    // Full navigation so AuthProvider drops the in-memory demo session.
+    window.location.assign('/auth/login');
   }
 
   return (

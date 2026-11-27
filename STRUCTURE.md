@@ -430,6 +430,9 @@ npm run build
 node scripts/verify-setup.js
 
 # Create demo account
+# (add SUPABASE_SERVICE_ROLE_KEY to .env.local so the account is created with a
+#  confirmed email; without it "Quick Access (Demo Account)" falls back to the
+#  built-in local demo, which runs on browser storage — see src/lib/demo/)
 node scripts/create-demo-account.js
 ```
 

@@ -77,26 +77,41 @@ A screen may choose one feature accent, but shared controls retain shared tokens
 
 ## 4. Typography
 
-The SVGs have converted text to vector paths, so the original font family cannot be reliably identified from the supplied files. Use a close, legible sans-serif family with broad weights. Recommended stack:
+The SVGs have converted text to vector paths, so the family cannot be read from metadata. The faces below were identified by measuring rendered glyph proportions in `Missions.svg` and comparing letterform anatomy against candidate families.
 
-`Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`
+### 4.1 Families
 
-If the project has an approved bundled font, use it consistently after visual comparison.
+**Display — Saira Condensed** (`500 / 600 / 700 / 800`)
 
-### Type scale
+Used for page titles, section titles, panel/card titles, KPI numerals and other short display lines. The reference page title measures 324px wide × 27px cap height (width/cap = 12.0); Saira Condensed 800 measures 11.92. Its flat-topped `A`, horizontal `Q` tail and condensed caps match the reference.
 
-| Token | Desktop size | Weight | Usage |
-|---|---:|---:|---|
-| `display` | 36–44px | 800–900 | Rare page hero/title |
-| `h1` | 30–36px | 800–900 | Main page title |
-| `h2` | 20–24px | 750–850 | Section title |
-| `h3` | 16–18px | 700–800 | Card / panel title |
-| `body` | 14–16px | 400–500 | Primary content |
-| `body-sm` | 12–13px | 400–500 | Secondary content |
-| `label` | 10–12px | 650–800 | Compact metadata / uppercase labels |
-| `micro` | 9–10px | 600–750 | Dense telemetry only; avoid for essential content |
+**UI / body — IBM Plex Sans** (`400 / 500 / 600 / 700`)
 
-Use uppercase for short section labels and system tags, not for paragraphs. Use sentence case for explanatory copy. Maintain readable line height: 1.45–1.6 body, 1.05–1.2 headings.
+Used for body copy, navigation, controls, metadata, labels and data. The reference caption line measures ~52 width/cap at 100px, matching IBM Plex Sans; the tailed `l`, single-storey `g`, plain zero and curved comma are all consistent with it.
+
+Both families are self-hosted as latin `woff2` files in `public/fonts/` and declared with `@font-face` in `src/styles/globals.css`. Tokens `--font-display` and `--font-body` point at them, so builds and runtime do not depend on Google Fonts. Do not substitute system fonts except as the declared fallbacks.
+
+### 4.2 Type scale (measured from the references)
+
+| Token | Size | Family | Weight | Usage |
+|---|---:|---|---:|---|
+| `display` | 44px | Saira Condensed | 800 | Rare hero / oversized KPI |
+| `h1` / page title | 39px | Saira Condensed | 800 | Main page title |
+| `h2` / section | 24px | Saira Condensed | 700 | Section title |
+| `h3` / panel | 19–20px | Saira Condensed | 700 | Card / panel title |
+| `body` | 13px | IBM Plex Sans | 400 | Primary content |
+| `body-sm` | 12px | IBM Plex Sans | 400 | Secondary content |
+| `label` | 10px | IBM Plex Sans | 700 | Uppercase metadata / labels |
+| `micro` | 9px | IBM Plex Sans | 600 | Dense telemetry only |
+
+### 4.3 Style rules
+
+- All headings and display numerals are **uppercase**, line-height **1.02–1.1**, tracking **0.01em**.
+- Body copy is sentence case, line-height **1.55**.
+- Uppercase labels use **0.08–0.12em** tracking. This tracking is what creates the technical, tabular texture in the reference; do not apply it to paragraphs.
+- Use tabular numerals (`font-variant-numeric: tabular-nums`) for all metrics, counters and XP values.
+- Use the display face for short labels and titles; never set long paragraphs in Saira Condensed.
+- Do not vary the base families or the scale without a system-wide revision.
 
 ## 5. Layout grid and responsive rules
 

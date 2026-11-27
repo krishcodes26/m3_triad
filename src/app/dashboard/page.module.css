@@ -97,10 +97,13 @@
 }
 
 .cardTitle {
-  font-size: var(--text-16);
+  font-family: var(--font-display);
+  font-size: 20px;
   font-weight: var(--fw-extrabold);
   color: var(--ink);
-  line-height: var(--lh-snug);
+  line-height: 1.1;
+  text-transform: uppercase;
+  letter-spacing: var(--ls-display);
 }
 
 .cardSubtitle {
@@ -275,10 +278,13 @@
 }
 
 .focusTitle {
-  font-size: var(--text-16);
-  font-weight: var(--fw-extrabold);
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: var(--fw-black);
   color: var(--ink);
-  line-height: var(--lh-snug);
+  line-height: 1.08;
+  text-transform: uppercase;
+  letter-spacing: var(--ls-display);
 }
 
 .focusMeta {
